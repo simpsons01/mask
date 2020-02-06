@@ -1,13 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>mask-search</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            height: 100%;
+        }
+    </style>
 </head>
+
 <body>
-    my project test changed
-    <%= api %>
+    <div id="map"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
+    <script>
+        async function initMap() {
+            let setting = await axios.get('/map-setting.json')
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 25.052518, lng: 121.526219},
+                zoom: 19,
+                styles:setting.data,
+                disableDefaultUI: true
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRZSeQ7QV_b88oo3AtghbQGCQYwdKKs6Q&callback=initMap"
+        async defer></script>
 </body>
+
 </html>
