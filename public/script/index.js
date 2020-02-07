@@ -104,6 +104,7 @@ async function initMap() {
             markerAry.push(marker)
         })
         renderResult.innerHTML = str
+        sidebar.classList.remove('open')
     }
 
     function searchHandler() {

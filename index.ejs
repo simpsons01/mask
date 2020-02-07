@@ -18,6 +18,7 @@
       font-family: 'Noto Sans TC', sans-serif;
     }
 
+
     .text-red {
       color: red;
     }
@@ -160,6 +161,7 @@
 
     .shadow .light-box {
       padding: 30px 40px;
+      box-sizing: border-box;
       background: white;
       z-index: 100;
       border-radius: 15px;
@@ -193,6 +195,16 @@
         width: 200px;
         transform: translateX(220px);
       }
+
+      .shadow .light-box {
+        width: 90%;
+        padding: 20px;
+      }
+
+      .shadow .light-box ul {
+        max-width: 300px;
+        margin: 0 auto;
+      }
     }
   </style>
 </head>
@@ -203,7 +215,8 @@
       <ul>
         <li>請使用右邊選單查詢資料或者點擊地圖任一處搜尋</li>
         <li>請使用選單滑桿調整搜索距離，範圍100-1000公尺</li>
-        <li><span><img style="margin-left: -7px;" src="/img/empty.png"></span>，此圖示表示大人口罩與小孩口罩<span style="color: red;">皆無庫存</span></li>
+        <li><span><img style="margin-left: -7px;" src="/img/empty.png"></span>，此圖示表示大人口罩與小孩口罩<span
+            style="color: red;">皆無庫存</span></li>
         <li><span><img src="/img/store.png"></span>，此圖示表示大人口罩或小孩口罩<span style="color: red;">有庫存</span></li>
         <li>請以現場的庫存為準，線上資料僅供參考</li>
         <li style="margin: 0;">資料來源: <a href="https://g0v.hackmd.io/@kiang/mask-info" target="_blank">口罩供需資訊平台</a></li>
