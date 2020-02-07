@@ -6,7 +6,7 @@ async function initMap() {
     const result = await axios.get(api_url)
     const mapConfig = {
         center: { lat: 25.052518, lng: 121.526219 },
-        zoom: 17,
+        zoom: window.innerWidth < 1000 ? 15 : 17,
         styles: setting.data,
         disableDefaultUI: true
     }
