@@ -2,69 +2,249 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>mask-search</title>
-    <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>mask-search</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        #map {
-            width: 80%;
-            height: 80%;
-        }
-    </style>
+    #app {
+      width: 90%;
+      height: 80%;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid black;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .sidebar {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 200px;
+      height: 100%;
+      background: #eee;
+      padding: 10px;
+      z-index: 2;
+      box-shadow: -3px 0px 10px -4px rgba(0, 0, 0, 0.75);
+      transform: translateX(220px);
+      transition: .3s all ease-in-out;
+    }
+
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .sidebar>h1 {
+      color: #3c3b3b;
+      margin-top: 10px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #3c3b3b;
+    }
+
+    .search-bar {
+      height: 30px;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 25px;
+    }
+
+    .search-bar>input {
+      background: #cccccc;
+      border: 0;
+      height: 30px;
+      width: 80%;
+      padding: 0;
+    }
+
+    .search-bar>button {
+      background: #c1bebe;
+      border: 0px;
+      height: 31px;
+      width: 20%;
+      margin-left: -6px;
+      outline: none;
+    }
+
+    .range-silder {
+      margin-top: 15px;
+      position: relative;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #3c3b3b;
+    }
+
+    .range-silder>input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      outline: none;
+      border: 5px;
+      height: 6px;
+      background: #c1bebe;
+    }
+
+    .range-silder>input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      position: relative;
+      width: 15px;
+      height: 15px;
+      background: gray;
+      border-radius: 50%;
+      transition: .2s;
+    }
+
+    .toggle-btn {
+      display: inline-block;
+      background: gray;
+      position: absolute;
+      left: -27px;
+      width: 30px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      font-size: 18px;
+      color: white;
+      outline: none;
+      top: 2px;
+    }
+  </style>
 </head>
 
 <body>
+  <div id="app">
+    <div class="sidebar open">
+      <button class="toggle-btn">></button>
+      <h1>口罩地圖</h1>
+      <div class="search-bar">
+        <input type="text" value="中興大學">
+        <button>搜尋</button>
+      </div>
+      <div class="range-silder">
+        <div class="range-text">搜索距離：500公尺</div>
+        <input type="range" min="100" max="1000" value="500">
+      </div>
+      <div class="result"></div>
+    </div>
     <div id="map"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
-    <script>
-        async function initMap() {
-            const api_url = 'https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json?fbclid=IwAR3Owu0eV4q0oSFWq5owQrpSPaJq9K1BP53Y-t6yixEXPre8BV_AQccarEU'
-            const setting = await axios.get('/map-setting.json')
-            const result = await axios.get(api_url)
-            const image = ''
-            const mapConfig = {
-                center: { lat: 25.052518, lng: 121.526219 },
-                zoom: 14,
-                styles: setting.data,
-                disableDefaultUI: true
-            }
-            let map, service, info
-            info = new google.maps.InfoWindow();
-            map = new google.maps.Map(document.getElementById('map'), mapConfig)
-            service = new google.maps.places.PlacesService(map);
-            result.data.features.slice(0, 50).forEach(item => {
-                let {lat,lng} = item.geometry
-                let marker = new google.maps.Marker({
-                    position: { lat , lng },
-                    map: map,
-                    icon: image,
-                    shape: shape,
-                    title: beach[0],
-                    zIndex: beach[3]
-                });
-            })
-            // let request = {
-            //     query: 'Museum of Contemporary Art Australia',
-            //     fields: ['name','geometry'],
-            // };
-            // service.findPlaceFromQuery(request, function (results, status) {
-            //     if (status === google.maps.places.PlacesServiceStatus.OK) {
-            //         console.log(results)
-            //     }
-            // });
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
+  <script>
+    // result.data.features.slice(0, 50).forEach(item => {
+    //   let { lat, lng } = item.geometry
+    //   let marker = new google.maps.Marker({
+    //     position: {
+    //       lat: item.geometry.coordinates[1],
+    //       lng: item.geometry.coordinates[0],
+    //     },
+    //     map: map,
+    //     icon: '/img/mask.png',
+    //   });
+    // })
+    async function initMap() {
+      const api_url = 'https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json?fbclid=IwAR3Owu0eV4q0oSFWq5owQrpSPaJq9K1BP53Y-t6yixEXPre8BV_AQccarEU'
+      const setting = await axios.get('/map-setting.json')
+      const result = await axios.get(api_url)
+      console.log(result.data.properties.address.substring)
+      const mapConfig = {
+        center: { lat: 25.052518, lng: 121.526219 },
+        zoom: 16,
+        styles: setting.data,
+        disableDefaultUI: true
+      }
+      let map, service, info, timer, circle, coordinates, searchMarker
+      info = new google.maps.InfoWindow();
+      map = new google.maps.Map(document.getElementById('map'), mapConfig)
+      service = new google.maps.places.PlacesService(map);
+      const sidebar = document.querySelector('.sidebar')
+      const toggleBtn = document.querySelector('.toggle-btn')
+      const rangeSilder = document.querySelector('.range-silder > input')
+      const searchBtn = document.querySelector('.search-bar > button')
+      const searchBar = document.querySelector('.search-bar > input')
+
+      function markerHandler({ lat, lng }, isDefalutIcon) {
+        let setting = {
+          position: { lat, lng },
+          map: map,
+          icon: '/img/mask.png'
         }
-    </script>
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRZSeQ7QV_b88oo3AtghbQGCQYwdKKs6Q&callback=initMap&libraries=places"
-        async defer></script>
+        isDefalutIcon ? delete setting.icon : setting
+        return new google.maps.Marker(setting)
+      }
+
+      function circleHadler({ lat, lng }, range) {
+        return new google.maps.Circle({
+          map: map,
+          radius: parseInt(range, 10),
+          center: { lat, lng },
+          strokeColor: '#FF0000',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#FF0000',
+          fillOpacity: 0.35,
+        });
+      }
+
+      function searchHandler() {
+        if (searchBar.value == '') return
+        let request = {
+          query: searchBar.value.trim(),
+          fields: ['name', 'geometry'],
+        };
+        service.findPlaceFromQuery(request, function (results, status) {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            if (searchMarker) {
+              circle.setMap(null)
+              searchMarker.setMap(null)
+            }
+            coordinates = {
+              lat: results[0].geometry.location.lat(),
+              lng: results[0].geometry.location.lng()
+            }
+            circle = circleHadler(coordinates, rangeSilder.value)
+            searchMarker = markerHandler(coordinates, true)
+            map.setCenter(coordinates)
+          }
+        });
+      }
+
+      rangeSilder.addEventListener('input', function () {
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+          circle.setMap(null)
+          circle = circleHadler(coordinates, rangeSilder.value)
+        }, 500)
+        document.querySelector('.range-text').textContent = `搜索距離：${rangeSilder.value}公尺`
+      })
+
+      toggleBtn.addEventListener('click', function () {
+        if (sidebar.classList.contains('open')) {
+          toggleBtn.textContent = "<"
+        } else {
+          toggleBtn.textContent = ">"
+        }
+        sidebar.classList.toggle('open')
+      })
+
+      window.addEventListener('keydown', function (e) {
+        if (e.keyCode == 13) searchHandler()
+      })
+
+      searchBtn.addEventListener('click', searchHandler)
+    }
+  </script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRZSeQ7QV_b88oo3AtghbQGCQYwdKKs6Q&callback=initMap&libraries=places"
+    async defer></script>
 </body>
 
 </html>
